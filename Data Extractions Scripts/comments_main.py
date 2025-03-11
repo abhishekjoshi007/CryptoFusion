@@ -1,15 +1,21 @@
 import os
-import requests
+import asyncio
+import aiohttp
 import json
 import time
 from datetime import datetime
 import pandas as pd
-from tqdm import tqdm
 import re  # For cleaning HTML tags
 
 api_url = "https://api-2-0.spot.im/v1.0.0/conversation/read"
-csv_path = '/Users/abhishekjoshi/Documents/GitHub/Cross-Market-Deep-Learning-Multi-Modal-Stock-Crypto-Prediction/CSV/ticker_list copy.csv'
-base_dir = 'filtered_comments'
+csv_path = '/Users/abhishekjoshi/Documents/GitHub/Cross-Market-Deep-Learning-Multi-Modal-Stock-Crypto-Prediction/CSV/Crypto.csv'
+base_dir = '/Users/abhishekjoshi/Documents/GitHub/Cross-Market-Deep-Learning-Multi-Modal-Stock-Crypto-Prediction/Combined Data /Historic Data Cry'
+
+# Configuration parameters
+batch_size = 500         # Number of comments per batch (ensure API supports this)
+max_batches = 1500        # Maximum number of batches to scan
+concurrency = 5          # Number of concurrent requests
+jump_multiplier = 5      # (Not used directly here but could be used for dynamic offset jumps)
 
 def convert_timestamp(unix_timestamp):
     """Convert Unix timestamp to human-readable date."""
@@ -21,7 +27,7 @@ def convert_timestamp(unix_timestamp):
 
 def clean_html_tags(text):
     """Remove HTML tags like <p>, <br>, etc., from a string."""
-    clean_text = re.sub(r'<[^>]*>', '', text)  # Regex to remove HTML tags
+    clean_text = re.sub(r'<[^>]*>', '', text)
     return clean_text.strip()
 
 def clean_comment_data(comment):
@@ -39,7 +45,7 @@ def clean_comment_data(comment):
         "best_score": comment.get("best_score", 0),
         "total_replies_count": comment.get("total_replies_count", 0),
         "user_reputation": comment.get("user_reputation", 0),
-        "additional_data": comment.get("additional_data", {})  # Add `additional_data` if available
+        "additional_data": comment.get("additional_data", {})
     }
 
     # Process replies recursively
@@ -54,64 +60,110 @@ def clean_comment_data(comment):
 
     return cleaned_data
 
-def fetch_comments_within_date_range(payload, headers, start_date, end_date):
+async def fetch_batch(session, payload, headers):
+    """Fetch a single batch with the given offset."""
+    async with session.post(api_url, json=payload, headers=headers) as response:
+        if response.status != 200:
+            print(f"Failed to fetch data: Status code {response.status}")
+            return None
+        return await response.json()
+
+async def fetch_comments_within_date_range_async(payload, headers, start_date, end_date):
     """
-    Fetch comments within the given date range and clean the data as we fetch.
+    Asynchronously fetch comments within the desired date range.
+    The function launches multiple batch requests concurrently.
     """
-    start_date_obj = datetime.strptime(start_date, '%Y-%m-%d')
-    end_date_obj = datetime.strptime(end_date, '%Y-%m-%d')
+    desired_start_obj = datetime.strptime(start_date, '%Y-%m-%d')
+    desired_end_obj = datetime.strptime(end_date, '%Y-%m-%d')
     cleaned_comments = []
+    batch_count = 0
+    current_offset = payload["offset"]
 
-    try:
-        while True:
-            response = requests.post(api_url, headers=headers, data=json.dumps(payload))
-            if response.status_code != 200:
-                print(f"Failed to fetch data: Status code {response.status_code}")
-                break
+    async with aiohttp.ClientSession() as session:
+        while batch_count < max_batches:
+            tasks = []
+            # Prepare a group of concurrent batch requests
+            for i in range(concurrency):
+                batch_payload = payload.copy()
+                batch_payload["offset"] = current_offset + i * batch_size
+                batch_payload["count"] = batch_size
+                tasks.append(fetch_batch(session, batch_payload, headers))
+            
+            responses = await asyncio.gather(*tasks, return_exceptions=True)
 
-            data = response.json()
-            batch_comments = data.get("conversation", {}).get("comments", [])
+            # Process each response
+            for r in responses:
+                if r is None or isinstance(r, Exception):
+                    continue
+                batch_comments = r.get("conversation", {}).get("comments", [])
+                if not batch_comments:
+                    continue
 
-            # If no comments are returned, stop the process
-            if not batch_comments:
-                break
+                # Determine the batch's date range
+                batch_newest = datetime.utcfromtimestamp(batch_comments[0]['written_at'])
+                batch_oldest = datetime.utcfromtimestamp(batch_comments[-1]['written_at'])
+                print(f"DEBUG: Batch date range: {batch_newest} to {batch_oldest}")
 
-            for comment in batch_comments:
-                if 'written_at' in comment:
-                    comment_date = datetime.utcfromtimestamp(comment['written_at'])
-                    if start_date_obj <= comment_date <= end_date_obj:
-                        # Clean and append the comment
-                        cleaned_comments.append(clean_comment_data(comment))
-                    elif comment_date < start_date_obj:
-                        # Stop fetching further if we encounter a comment older than `start_date`
-                        print(f"DEBUG: Stopping fetch, comment date {comment_date} is before {start_date}.")
+                # Hierarchical check: skip if entire batch is out-of-range
+                if batch_newest.year > desired_end_obj.year:
+                    print("DEBUG: Entire batch's year is newer than desired end year. Skipping batch.")
+                    continue
+                if batch_oldest.year < desired_start_obj.year:
+                    print("DEBUG: Entire batch's year is older than desired start year. Ending fetch.")
+                    return cleaned_comments
+
+                # Month check (when on the boundary year)
+                if batch_newest.year == desired_end_obj.year:
+                    if batch_newest.month > desired_end_obj.month and batch_oldest.month > desired_end_obj.month:
+                        print("DEBUG: Entire batch's month is newer than desired end month. Skipping batch.")
+                        continue
+                if batch_oldest.year == desired_start_obj.year:
+                    if batch_newest.month < desired_start_obj.month and batch_oldest.month < desired_start_obj.month:
+                        print("DEBUG: Entire batch's month is older than desired start month. Ending fetch.")
                         return cleaned_comments
 
-            # If there are no more comments to fetch
-            if not data.get("conversation", {}).get("has_next", False):
-                break
+                # Day check (when in the boundary month)
+                if (batch_newest.year == desired_end_obj.year and batch_newest.month == desired_end_obj.month):
+                    if batch_newest.day > desired_end_obj.day and batch_oldest.day > desired_end_obj.day:
+                        print("DEBUG: Entire batch's day is newer than desired end day. Skipping batch.")
+                        continue
+                if (batch_oldest.year == desired_start_obj.year and batch_oldest.month == desired_start_obj.month):
+                    if batch_newest.day < desired_start_obj.day and batch_oldest.day < desired_start_obj.day:
+                        print("DEBUG: Entire batch's day is older than desired start day. Ending fetch.")
+                        return cleaned_comments
 
-            # Update the offset for the next batch
-            payload["offset"] = data["conversation"]["offset"]
-            print(f"Fetched {len(cleaned_comments)} cleaned comments so far within date range...")
-            time.sleep(1)  # Pause to respect rate limits
-    except Exception as e:
-        print(f"An error occurred while fetching comments: {e}")
+                # Process individual comments in the batch that fall in range
+                for comment in batch_comments:
+                    if 'written_at' in comment:
+                        comment_date = datetime.utcfromtimestamp(comment['written_at'])
+                        print(f"DEBUG: Comment date: {comment_date}")
+                        if desired_start_obj <= comment_date <= desired_end_obj:
+                            cleaned_comments.append(clean_comment_data(comment))
+                        elif comment_date < desired_start_obj:
+                            print(f"DEBUG: Stopping fetch, comment date {comment_date} is before {start_date}.")
+                            return cleaned_comments
+
+            # Update the offset based on the number of concurrent batches processed
+            batch_count += concurrency
+            current_offset += concurrency * batch_size
+            print(f"DEBUG: Fetched {len(cleaned_comments)} cleaned comments so far after {batch_count} batches.")
+            await asyncio.sleep(1)  # Pause to respect rate limits
+
     return cleaned_comments
 
 def main():
     data = pd.read_csv(csv_path)
     total_tickers = len(data)
-
     os.makedirs(base_dir, exist_ok=True)
 
+    # Set desired date range
     start_date = '2024-08-01'
-    end_date = '2024-10-31'
+    end_date = '2024-11-01'
 
-    for idx, row in tqdm(data.iterrows(), total=total_tickers, desc="Processing Tickers"):
+    for idx, row in data.iterrows():
         payload = {
             "conversation_id": row['Conversation Id'],
-            "count": 100,  # Increase batch size to 100
+            "count": batch_size,
             "offset": 0,
             "sort_by": "newest",
         }
@@ -122,13 +174,13 @@ def main():
             "x-post-id": row['X-Post-Id'],
         }
 
-        print(f"\nProcessing {idx + 1}/{total_tickers}: {row['Ticker']} ({row['Company Name']})")
-        cleaned_comments = fetch_comments_within_date_range(payload, api_headers, start_date, end_date)
+        print(f"\nProcessing {idx + 1}/{total_tickers}: {row['Ticker']} ({row['Coin Name']})")
+        # Run the asynchronous batch fetching
+        cleaned_comments = asyncio.run(fetch_comments_within_date_range_async(payload, api_headers, start_date, end_date))
 
         ticker_dir = os.path.join(base_dir, row['Ticker'])
         os.makedirs(ticker_dir, exist_ok=True)
-
-        filename = os.path.join(ticker_dir, f"{row['Ticker']}_comments_filtered.json")
+        filename = os.path.join(ticker_dir, f"{row['Ticker']}_comments.json")
         with open(filename, 'w', encoding='utf-8') as f:
             json.dump(cleaned_comments, f, ensure_ascii=False, indent=4)
         print(f"Saved {len(cleaned_comments)} cleaned comments for {row['Ticker']} to {filename}")

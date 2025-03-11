@@ -12,7 +12,7 @@ import pandas as pd
 from datetime import datetime
 
 
-file_path = "/Users/abhishekjoshi/Documents/GitHub/stock_forecasting_CAI/CSV/ticker_list copy.csv"  
+file_path = "/Users/abhishekjoshi/Documents/GitHub/Cross-Market-Deep-Learning-Multi-Modal-Stock-Crypto-Prediction/CSV/Crypto copy.csv"  
 df = pd.read_csv(file_path)
 
 
