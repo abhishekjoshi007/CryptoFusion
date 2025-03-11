@@ -1,0 +1,41 @@
+[
+    {
+        "time": "2024-08-07",
+        "replies_count": 4,
+        "rank": {
+            "ranks_up": 10,
+            "ranks_down": 0,
+            "ranked_by_current_user": 10
+        },
+        "replies": [
+            {
+                "text": "User Report Total Submissions 2 First Seen In WSB 3 years ago Total Comments 49 Previous Best DD Account Age 3 years Join WSB Discord"
+            },
+            {
+                "text": "Good DD. If things go south in the Middle East like people think. Stocks likes these will definitely be bullish."
+            },
+            {
+                "text": "Thanks call"
+            },
+            {
+                "text": "Its down one percent lol"
+            }
+        ],
+        "content": [
+            {
+                "text": "KTOS, God of War Earnings Play"
+            }
+        ],
+        "best_score": 10,
+        "total_replies_count": 4,
+        "user_reputation": 995,
+        "additional_data": {
+            "labels": {
+                "ids": [
+                    "BULLISH"
+                ],
+                "section": "stock"
+            }
+        }
+    }
+]
