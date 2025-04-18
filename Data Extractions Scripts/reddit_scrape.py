@@ -21,7 +21,7 @@ START_DATE = datetime(2024, 8, 1)
 END_DATE = datetime(2024, 10, 31)
 
 # Load the CSV file containing tickers (stocks or crypto)
-file_path = "/Users/abhishekjoshi/Documents/GitHub/Cross-Market-Deep-Learning-Multi-Modal-Stock-Crypto-Prediction/CSV/Crypto.csv"  
+file_path = "/Users/abhishekjoshi/Documents/GitHub/Cross-Market-Deep-Learning-Multi-Modal-Stock-Crypto-Prediction/CSV/Crypto copy.csv"  
 df = pd.read_csv(file_path)
 tickers = df['Ticker'].tolist()
 
