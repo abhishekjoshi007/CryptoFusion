@@ -38,16 +38,13 @@ Internet Computer,ICP-USD,sp_Rba9aFpG,finmb$ICP$CCC,sp_Rba9aFpG_finmb$ICP$CCC
 NEAR Protocol,NEAR-USD,sp_Rba9aFpG,finmb$NEAR$CCC,sp_Rba9aFpG_finmb$NEAR$CCC
 BUSD,BUSD-USD,sp_Rba9aFpG,finmb$BUSD$CCC,sp_Rba9aFpG_finmb$BUSD$CCC
 THORChain,RUNE-USD,sp_Rba9aFpG,finmb$RUNE$CCC,sp_Rba9aFpG_finmb$RUNE$CCC
-Immutable,IMX-USD,sp_Rba9aFpG,finmb$IMX$CCC,sp_Rba9aFpG_finmb$IMX$CCC
 Optimism,OP-USD,sp_Rba9aFpG,finmb$OP$CCC,sp_Rba9aFpG_finmb$OP$CCC
 VeChain,VET-USD,sp_Rba9aFpG,finmb$VET$CCC,sp_Rba9aFpG_finmb$VET$CCC
 Mantle,MNT-USD,sp_Rba9aFpG,finmb$MNT$CCC,sp_Rba9aFpG_finmb$MNT$CCC
 Quant,QNT-USD,sp_Rba9aFpG,finmb$QNT$CCC,sp_Rba9aFpG_finmb$QNT$CCC
-Bittensor,TAO-USD,sp_Rba9aFpG,finmb$TAO$CCC,sp_Rba9aFpG_finmb$TAO$CCC
 Aave,AAVE-USD,sp_Rba9aFpG,finmb$AAVE$CCC,sp_Rba9aFpG_finmb$AAVE$CCC
 Maker,MKR-USD,sp_Rba9aFpG,finmb$MKR$CCC,sp_Rba9aFpG_finmb$MKR$CCC
 Injective,INJ-USD,sp_Rba9aFpG,finmb$INJ$CCC,sp_Rba9aFpG_finmb$INJ$CCC
-The Graph,GRT-USD,sp_Rba9aFpG,finmb$GRT$CCC,sp_Rba9aFpG_finmb$GRT$CCC
 Arbitrum,ARB-USD,sp_Rba9aFpG,finmb$ARB$CCC,sp_Rba9aFpG_finmb$ARB$CCC
 Render,RNDR-USD,sp_Rba9aFpG,finmb$RNDR$CCC,sp_Rba9aFpG_finmb$RNDR$CCC
 Rocket Pool ETH,RETH-USD,sp_Rba9aFpG,finmb$RETH$CCC,sp_Rba9aFpG_finmb$RETH$CCC
@@ -101,14 +98,12 @@ Curve DAO,CRV-USD,sp_Rba9aFpG,finmb$CRV$CCC,sp_Rba9aFpG_finmb$CRV$CCC
 Rollbit Coin,RLB-USD,sp_Rba9aFpG,finmb$RLB$CCC,sp_Rba9aFpG_finmb$RLB$CCC
 Gnosis,GNO-USD,sp_Rba9aFpG,finmb$GNO$CCC,sp_Rba9aFpG_finmb$GNO$CCC
 Chiliz,CHZ-USD,sp_Rba9aFpG,finmb$CHZ$CCC,sp_Rba9aFpG_finmb$CHZ$CCC
-cETH,CETH-USD,sp_Rba9aFpG,finmb$CETH$CCC,sp_Rba9aFpG_finmb$CETH$CCC
 Gas,GAS-USD,sp_Rba9aFpG,finmb$GAS$CCC,sp_Rba9aFpG_finmb$GAS$CCC
 Tether Gold,XAUT-USD,sp_Rba9aFpG,finmb$XAUT$CCC,sp_Rba9aFpG_finmb$XAUT$CCC
 GMX,GMX-USD,sp_Rba9aFpG,finmb$GMX$CCC,sp_Rba9aFpG_finmb$GMX$CCC
 Trust Wallet,TWT-USD,sp_Rba9aFpG,finmb$TWT$CCC,sp_Rba9aFpG_finmb$TWT$CCC
 Huobi,HT-USD,sp_Rba9aFpG,finmb$HT$CCC,sp_Rba9aFpG_finmb$HT$CCC
 PAX Gold,PAXG-USD,sp_Rba9aFpG,finmb$PAXG$CCC,sp_Rba9aFpG_finmb$PAXG$CCC
-Pepe,PEPE-USD,sp_Rba9aFpG,finmb$PEPE$CCC,sp_Rba9aFpG_finmb$PEPE$CCC
 Pax Dollar,USDP-USD,sp_Rba9aFpG,finmb$USDP$CCC,sp_Rba9aFpG_finmb$USDP$CCC
 ORDI,ORDI-USD,sp_Rba9aFpG,finmb$ORDI$CCC,sp_Rba9aFpG_finmb$ORDI$CCC
 Staked Frax Ether,SFRXETH-USD,sp_Rba9aFpG,finmb$SFRXETH$CCC,sp_Rba9aFpG_finmb$SFRXETH$CCC
@@ -121,17 +116,14 @@ Kujira,KUJI-USD,sp_Rba9aFpG,finmb$KUJI$CCC,sp_Rba9aFpG_finmb$KUJI$CCC
 Zcash,ZEC-USD,sp_Rba9aFpG,finmb$ZEC$CCC,sp_Rba9aFpG_finmb$ZEC$CCC
 Osmosis,OSMO-USD,sp_Rba9aFpG,finmb$OSMO$CCC,sp_Rba9aFpG_finmb$OSMO$CCC
 WOO Network,WOO-USD,sp_Rba9aFpG,finmb$WOO$CCC,sp_Rba9aFpG_finmb$WOO$CCC
-STEPN,GMT-USD,sp_Rba9aFpG,finmb$GMT$CCC,sp_Rba9aFpG_finmb$GMT$CCC
 Beam,BEAM-USD,sp_Rba9aFpG,finmb$BEAM$CCC,sp_Rba9aFpG_finmb$BEAM$CCC
 Casper Network,CSPR-USD,sp_Rba9aFpG,finmb$CSPR$CCC,sp_Rba9aFpG_finmb$CSPR$CCC
 Akash Network,AKT-USD,sp_Rba9aFpG,finmb$AKT$CCC,sp_Rba9aFpG_finmb$AKT$CCC
-Terra,LUNA-USD,sp_Rba9aFpG,finmb$lUNA$CCC,sp_Rba9aFpG_finmb$lUNA$CCC
 1inch,1INCH-USD,sp_Rba9aFpG,finmb$1INCH$CCC,sp_Rba9aFpG_finmb$1INCH$CCC
 SingularityNET,AGIX-USD,sp_Rba9aFpG,finmb$AGIX$CCC,sp_Rba9aFpG_finmb$AGIX$CCC
 Aleph Zero,AZERO-USD,sp_Rba9aFpG,finmb$AZERO$CCC,sp_Rba9aFpG_finmb$AZERO$CCC
 Oasis Network,ROSE-USD,sp_Rba9aFpG,finmb$ROSE$CCC,sp_Rba9aFpG_finmb$ROSE$CCC
 Zilliqa,ZIL-USD,sp_Rba9aFpG,finmb$ZIL$CCC,sp_Rba9aFpG_finmb$ZIL$CCC
-Compound,COMP-USD,sp_Rba9aFpG,finmb$COMP$CCC,sp_Rba9aFpG_finmb$COMP$CCC
 Astar,ASTR-USD,sp_Rba9aFpG,finmb$ASTR$CCC,sp_Rba9aFpG_finmb$ASTR$CCC
 Dash,DASH-USD,sp_Rba9aFpG,finmb$DASH$CCC,sp_Rba9aFpG_finmb$DASH$CCC
 Marinade staked SOL,MSOL-USD,sp_Rba9aFpG,finmb$MSOL$CCC,sp_Rba9aFpG_finmb$MSOL$CCC
@@ -141,7 +133,6 @@ Sei,SEI-USD,sp_Rba9aFpG,finmb$SEI$CCC,sp_Rba9aFpG_finmb$SEI$CCC
 Qtum,QTUM-USD,sp_Rba9aFpG,finmb$QTUM$CCC,sp_Rba9aFpG_finmb$QTUM$CCC
 Flare,FLR-USD,sp_Rba9aFpG,finmb$FLR$CCC,sp_Rba9aFpG_finmb$FLR$CCC
 NEM,XEM-USD,sp_Rba9aFpG,finmb$XEM$CCC,sp_Rba9aFpG_finmb$XEM$CCC
-Axelar,AXL-USD,sp_Rba9aFpG,finmb$AXL$CCC,sp_Rba9aFpG_finmb$AXL$CCC
 APENFT,NFT-USD,sp_Rba9aFpG,finmb$NFT$CCC,sp_Rba9aFpG_finmb$NFT$CCC
 Helium,HNT-USD,sp_Rba9aFpG,finmb$HNT$CCC,sp_Rba9aFpG_finmb$HNT$CCC
 Basic Attention,BAT-USD,sp_Rba9aFpG,finmb$BAT$CCC,sp_Rba9aFpG_finmb$BAT$CCC
@@ -153,7 +144,6 @@ SKALE,SKL-USD,sp_Rba9aFpG,finmb$SKL$CCC,sp_Rba9aFpG_finmb$SKL$CCC
 Bitcoin Gold,BTG-USD,sp_Rba9aFpG,finmb$BTG$CCC,sp_Rba9aFpG_finmb$BTG$CCC
 ARK,ARK-USD,sp_Rba9aFpG,finmb$ARK$CCC,sp_Rba9aFpG_finmb$ARK$CCC
 CorgiAI,CORGIAI-USD,sp_Rba9aFpG,finmb$CORGIAI$CCC,sp_Rba9aFpG_finmb$CORGIAI$CCC
-Mask Network,MASK-USD,sp_Rba9aFpG,finmb$MASK$CCC,sp_Rba9aFpG_finmb$MASK$CCC
 SafePal,SFP-USD,sp_Rba9aFpG,finmb$SFP$CCC,sp_Rba9aFpG_finmb$SFP$CCC
 JUST,JST-USD,sp_Rba9aFpG,finmb$JST$CCC,sp_Rba9aFpG_finmb$JST$CCC
 Theta Fuel,TFUEL-USD,sp_Rba9aFpG,finmb$TFUEL$CCC,sp_Rba9aFpG_finmb$TFUEL$CCC
@@ -174,7 +164,6 @@ Siacoin,SC-USD,sp_Rba9aFpG,finmb$SC$CCC,sp_Rba9aFpG_finmb$SC$CCC
 Tellor Tributes,TRB-USD,sp_Rba9aFpG,finmb$TRB$CCC,sp_Rba9aFpG_finmb$TRB$CCC
 Escoin,ELG-USD,sp_Rba9aFpG,finmb$ELG$CCC,sp_Rba9aFpG_finmb$ELG$CCC
 Decred,DCR-USD,sp_Rba9aFpG,finmb$DCR$CCC,sp_Rba9aFpG_finmb$DCR$CCC
-Ronin,RON-USD,sp_Rba9aFpG,finmb$RON$CCC,sp_Rba9aFpG_finmb$RON$CCC
 Echelon Prime,PRIME-USD,sp_Rba9aFpG,finmb$PRIME$CCC,sp_Rba9aFpG_finmb$PRIME$CCC
 DeFiChain,DFI-USD,sp_Rba9aFpG,finmb$DFI$CCC,sp_Rba9aFpG_finmb$DFI$CCC
 Ethereum Name Service,ENS-USD,sp_Rba9aFpG,finmb$ENS$CCC,sp_Rba9aFpG_finmb$ENS$CCC
