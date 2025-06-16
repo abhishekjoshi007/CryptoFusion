@@ -4,48 +4,14 @@ import yfinance as yf
 import pandas as pd
 import os
 
-def handle_failed_ticker(ticker, csv_path, base_folder_name):
-    """
-    Identifies tickers with failed data extraction, prevents subdirectory creation,
-    and removes the ticker from the input CSV file.
-    
-    Args:
-        ticker (str): The ticker symbol that failed data extraction
-        csv_path (str): Path to the input CSV file containing tickers
-        base_folder_name (str): Path to the base folder for data storage
-    """
-    print(f"Handling failed ticker: {ticker}")
-    
-    # Check if subdirectory exists for the ticker and remove it if it does
-    ticker_folder = os.path.join(base_folder_name, ticker)
-    if os.path.exists(ticker_folder):
-        try:
-            os.rmdir(ticker_folder)
-            print(f"Removed empty subdirectory for {ticker} at {ticker_folder}")
-        except OSError as e:
-            print(f"Failed to remove subdirectory for {ticker}: {e}")
-    
-    # Remove the ticker from the CSV file
-    try:
-        # Read the current CSV
-        tickers_df = pd.read_csv(csv_path)
-        
-        # Filter out the failed ticker
-        updated_df = tickers_df[tickers_df["Ticker"] != ticker]
-        
-        # Save the updated CSV back to the original file
-        updated_df.to_csv(csv_path, index=False)
-        print(f"Removed {ticker} from {csv_path}")
-    except Exception as e:
-        print(f"Error updating CSV file {csv_path} for {ticker}: {e}")
-
 # 1) READ TICKERS FROM CSV
 #    Replace "coin_tickers.csv" with your actual filename/path
-tickers_df = pd.read_csv("C:/Users/Pushkarsikharam/Desktop/Cross-Market-Deep-Learning-Multi-Modal-Stock-Crypto-Prediction-main/CSV/Crypto.csv")  # CSV has columns like "Coin Name,Ticker,..."
+tickers_df = pd.read_csv("/Users/abhishekjoshi/Documents/GitHub/Cross-Market-Deep-Learning-Multi-Modal-Stock-Crypto-Prediction/CSV/Crypto.csv")  # CSV has columns like "Coin Name,Ticker,..."
+
 # 2) CONFIGURATION
-start_date = "2023-06-01"
-end_date   = "2025-06-01"
-base_folder_name = "C:/Users/Pushkarsikharam/Desktop/Cross-Market-Deep-Learning-Multi-Modal-Stock-Crypto-Prediction-main/Combined Data/Historic Data Cry"  # Main folder
+start_date = "2024-08-01"
+end_date   = "2024-11-01"
+base_folder_name = "/Users/abhishekjoshi/Documents/GitHub/Cross-Market-Deep-Learning-Multi-Modal-Stock-Crypto-Prediction/Combined Data /Historic Data Cry"  # Main folder
 
 # Create base folder if it doesn't exist
 if not os.path.exists(base_folder_name):
@@ -70,7 +36,6 @@ for idx, row in tickers_df.iterrows():
     # If nothing returned (e.g. invalid ticker or no data), skip
     if raw_data.empty:
         print(f"No data returned for {ticker}. Skipping.")
-        handle_failed_ticker(ticker, "C:/Users/Pushkarsikharam/Desktop/Cross-Market-Deep-Learning-Multi-Modal-Stock-Crypto-Prediction-main/CSV/Crypto.csv", base_folder_name)
         continue
 
     # 3b) Flatten multi-index columns for single ticker
