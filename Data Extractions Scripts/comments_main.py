@@ -9,11 +9,11 @@ import re  # For cleaning HTML tags
 
 api_url = "https://api-2-0.spot.im/v1.0.0/conversation/read"
 csv_path = '/Users/abhishekjoshi/Documents/GitHub/Cross-Market-Deep-Learning-Multi-Modal-Stock-Crypto-Prediction/CSV/Crypto.csv'
-base_dir = '/Users/abhishekjoshi/Documents/GitHub/Cross-Market-Deep-Learning-Multi-Modal-Stock-Crypto-Prediction/Combined Data /Historic Data Cry'
+base_dir = '/Users/abhishekjoshi/Documents/GitHub/Cross-Market-Deep-Learning-Multi-Modal-Stock-Crypto-Prediction/Historic Data Cry'
 
 # Configuration parameters
-batch_size = 500         # Number of comments per batch (ensure API supports this)
-max_batches = 1500        # Maximum number of batches to scan
+batch_size = 800         # Number of comments per batch (ensure API supports this)
+max_batches = 9500        # Maximum number of batches to scan
 concurrency = 5          # Number of concurrent requests
 jump_multiplier = 5      # (Not used directly here but could be used for dynamic offset jumps)
 
@@ -69,87 +69,61 @@ async def fetch_batch(session, payload, headers):
         return await response.json()
 
 async def fetch_comments_within_date_range_async(payload, headers, start_date, end_date):
-    """
-    Asynchronously fetch comments within the desired date range.
-    The function launches multiple batch requests concurrently.
-    """
-    desired_start_obj = datetime.strptime(start_date, '%Y-%m-%d')
-    desired_end_obj = datetime.strptime(end_date, '%Y-%m-%d')
-    cleaned_comments = []
-    batch_count = 0
-    current_offset = payload["offset"]
+    """Fetch all comments dated start_date … end_date (inclusive)."""
+    start_dt = datetime.strptime(start_date, '%Y-%m-%d')
+    end_dt   = datetime.strptime(end_date,   '%Y-%m-%d')
+    cleaned, batches, offset = [], 0, payload["offset"]
 
     async with aiohttp.ClientSession() as session:
-        while batch_count < max_batches:
-            tasks = []
-            # Prepare a group of concurrent batch requests
-            for i in range(concurrency):
-                batch_payload = payload.copy()
-                batch_payload["offset"] = current_offset + i * batch_size
-                batch_payload["count"] = batch_size
-                tasks.append(fetch_batch(session, batch_payload, headers))
-            
-            responses = await asyncio.gather(*tasks, return_exceptions=True)
+        while batches < max_batches:
+            # -------- launch CONCURRENCY parallel requests -------------
+            tasks = [
+                fetch_batch(
+                    session,
+                    dict(payload, offset=offset + i*batch_size, count=batch_size),
+                    headers
+                )
+                for i in range(concurrency)
+            ]
+            responses = await asyncio.gather(*tasks)
+            empty = True
 
-            # Process each response
-            for r in responses:
-                if r is None or isinstance(r, Exception):
+            # -------- handle every response ----------------------------
+            for res in responses:
+                if not res or isinstance(res, Exception):
                     continue
-                batch_comments = r.get("conversation", {}).get("comments", [])
-                if not batch_comments:
+                comments = res.get("conversation", {}).get("comments", [])
+                if not comments:
                     continue
+                empty = False
 
-                # Determine the batch's date range
-                batch_newest = datetime.utcfromtimestamp(batch_comments[0]['written_at'])
-                batch_oldest = datetime.utcfromtimestamp(batch_comments[-1]['written_at'])
-                print(f"DEBUG: Batch date range: {batch_newest} to {batch_oldest}")
+                newest = datetime.utcfromtimestamp(comments[0]['written_at'])
+                oldest = datetime.utcfromtimestamp(comments[-1]['written_at'])
+                print(f"DEBUG: {newest} … {oldest}")
 
-                # Hierarchical check: skip if entire batch is out-of-range
-                if batch_newest.year > desired_end_obj.year:
-                    print("DEBUG: Entire batch's year is newer than desired end year. Skipping batch.")
+                # (a) batch wholly AFTER window  → skip
+                if newest > end_dt and oldest > end_dt:
                     continue
-                if batch_oldest.year < desired_start_obj.year:
-                    print("DEBUG: Entire batch's year is older than desired start year. Ending fetch.")
-                    return cleaned_comments
+                # (b) batch wholly BEFORE window → done
+                if newest < start_dt and oldest < start_dt:
+                    return cleaned
 
-                # Month check (when on the boundary year)
-                if batch_newest.year == desired_end_obj.year:
-                    if batch_newest.month > desired_end_obj.month and batch_oldest.month > desired_end_obj.month:
-                        print("DEBUG: Entire batch's month is newer than desired end month. Skipping batch.")
-                        continue
-                if batch_oldest.year == desired_start_obj.year:
-                    if batch_newest.month < desired_start_obj.month and batch_oldest.month < desired_start_obj.month:
-                        print("DEBUG: Entire batch's month is older than desired start month. Ending fetch.")
-                        return cleaned_comments
+                # (c) overlap → copy in-range comments
+                for c in comments:
+                    t = datetime.utcfromtimestamp(c['written_at'])
+                    if start_dt <= t <= end_dt:
+                        cleaned.append(clean_comment_data(c))
 
-                # Day check (when in the boundary month)
-                if (batch_newest.year == desired_end_obj.year and batch_newest.month == desired_end_obj.month):
-                    if batch_newest.day > desired_end_obj.day and batch_oldest.day > desired_end_obj.day:
-                        print("DEBUG: Entire batch's day is newer than desired end day. Skipping batch.")
-                        continue
-                if (batch_oldest.year == desired_start_obj.year and batch_oldest.month == desired_start_obj.month):
-                    if batch_newest.day < desired_start_obj.day and batch_oldest.day < desired_start_obj.day:
-                        print("DEBUG: Entire batch's day is older than desired start day. Ending fetch.")
-                        return cleaned_comments
+            # if every page was empty the thread is exhausted
+            if empty:
+                break
 
-                # Process individual comments in the batch that fall in range
-                for comment in batch_comments:
-                    if 'written_at' in comment:
-                        comment_date = datetime.utcfromtimestamp(comment['written_at'])
-                        print(f"DEBUG: Comment date: {comment_date}")
-                        if desired_start_obj <= comment_date <= desired_end_obj:
-                            cleaned_comments.append(clean_comment_data(comment))
-                        elif comment_date < desired_start_obj:
-                            print(f"DEBUG: Stopping fetch, comment date {comment_date} is before {start_date}.")
-                            return cleaned_comments
+            offset   += concurrency * batch_size
+            batches  += concurrency
+            print(f"DEBUG: kept {len(cleaned)} comments after {batches} batches")
+            await asyncio.sleep(1)   # gentle rate-limit pause
 
-            # Update the offset based on the number of concurrent batches processed
-            batch_count += concurrency
-            current_offset += concurrency * batch_size
-            print(f"DEBUG: Fetched {len(cleaned_comments)} cleaned comments so far after {batch_count} batches.")
-            await asyncio.sleep(1)  # Pause to respect rate limits
-
-    return cleaned_comments
+    return cleaned
 
 def main():
     data = pd.read_csv(csv_path)
@@ -157,8 +131,8 @@ def main():
     os.makedirs(base_dir, exist_ok=True)
 
     # Set desired date range
-    start_date = '2024-08-01'
-    end_date = '2024-11-01'
+    start_date = '2023-06-01'
+    end_date = '2025-06-01'
 
     for idx, row in data.iterrows():
         payload = {

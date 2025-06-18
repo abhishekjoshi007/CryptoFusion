@@ -1,11 +1,8 @@
-#This code works for both stock and crypto
-
 import yfinance as yf
 import pandas as pd
 import os
 
-# 1) READ TICKERS FROM CSV
-#    Replace "coin_tickers.csv" with your actual filename/path
+
 tickers_df = pd.read_csv("C:/Users/Pushkarsikharam/Desktop/Cross-Market-Deep-Learning-Multi-Modal-Stock-Crypto-Prediction-main/CSV/Crypto.csv")  # CSV has columns like "Coin Name,Ticker,..."
 # 2) CONFIGURATION
 start_date = "2023-06-01"

@@ -17,11 +17,11 @@ USER_AGENT = "stock-analysis-v1"
 
 # Search parameters
 SUBREDDITS = ["stocks", "investing", "wallstreetbets", "crypto", "cryptocurrency"]
-START_DATE = datetime(2024, 8, 1)
-END_DATE = datetime(2024, 10, 31)
+START_DATE = datetime(2023, 6, 1)
+END_DATE = datetime(2026, 6, 1)
 
 # Load the CSV file containing tickers (stocks or crypto)
-file_path = "/Users/abhishekjoshi/Documents/GitHub/Cross-Market-Deep-Learning-Multi-Modal-Stock-Crypto-Prediction/CSV/Crypto copy.csv"  
+file_path = "/Users/abhishekjoshi/Documents/GitHub/Cross-Market-Deep-Learning-Multi-Modal-Stock-Crypto-Prediction/CSV/Crypto.csv"  
 df = pd.read_csv(file_path)
 tickers = df['Ticker'].tolist()
 
@@ -95,7 +95,7 @@ def scrape_ticker(ticker):
 
 def main():
     # Main output folder
-    base_output_dir = "/Users/abhishekjoshi/Documents/GitHub/Cross-Market-Deep-Learning-Multi-Modal-Stock-Crypto-Prediction/Combined Data /Data Cry"
+    base_output_dir = "/Users/abhishekjoshi/Documents/GitHub/Cross-Market-Deep-Learning-Multi-Modal-Stock-Crypto-Prediction/Historic Data Cry"
     os.makedirs(base_output_dir, exist_ok=True)
 
     for ticker in tickers:
