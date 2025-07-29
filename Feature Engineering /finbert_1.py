@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import json, re, os, pathlib, pandas as pd
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipeline
 
