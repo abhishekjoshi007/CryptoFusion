@@ -30,7 +30,7 @@ Evaluated on the **top-200 coins from January 2017 – January 2025** across six
 
 ## Architecture
 
-[CryptoFusion Architecture](assets/arch.png)
+![CryptoFusion Architecture](assets/arch.png)
 
 
 ## Repository Structure
@@ -69,35 +69,29 @@ CryptoFusion/
 
 ### Predictive Accuracy & Portfolio Performance (10 bps transaction costs)
 
-[Results](assets/res_1png)
-[Results](assets/res_2png)
+![Results](assets/res_1png)
+![Results](assets/res_2png)
 
 ### Sharpe Ratio by Market Regime
 
-[Regime Analysis](assets/regime_sharpe.png)
+![Regime Analysis](assets/regime_sharpe.png)
 
 CryptoFusion maintains Sharpe > 1.2 across all market regimes including the 2020 COVID-19 crash and the 2022 contagion.
 
 ### Ablation Study
 
-[Ablation Results](assets/ablation.png) 
+![Ablation Results](assets/ablation.png) 
 
-| Ablation | DA Drop | Sharpe Drop |
-|----------|---------|-------------|
-| Remove TGN | −18.3 pp | −0.21 |
-| Replace LLM → TF-IDF | −6.8 pp | — |
-| Replace LLM → VADER | −4.1 pp | — |
-| Remove RL Allocator | — | below 1.0 |
 
 ### Sensitivity: Risk Penalty λ
 
-[Lambda Sensitivity](assets/lambda_sensitivity.png) 
+![Lambda Sensitivity](assets/lambda_sensitivity.png) 
 
 Sharpe remains > 1.2 across λ ∈ [0.1, 1.0], with peak performance at λ = 0.25 (PPO) and λ = 0.50 (CVaR-PPO).
 
 ### Event-Aligned Returns (Terra/Luna Collapse)
 
-<[Event Aligned Returns](assets/event_aligned_returns.png) 
+![Event Aligned Returns](assets/event_aligned_returns.png) 
 
 CryptoFusion underperforms on the shock day (+1 day), then recovers within 5–10 trading days as the credibility filter down-weights unreliable sources and the TGN rewires its graph.
 
