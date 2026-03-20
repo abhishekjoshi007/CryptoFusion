@@ -69,8 +69,8 @@ CryptoFusion/
 
 ### Predictive Accuracy & Portfolio Performance (10 bps transaction costs)
 
-![Results](assets/res_1png)
-![Results](assets/res_2png)
+![Results](assets/res_1.png)
+![Results](assets/res_2.png)
 
 ### Sharpe Ratio by Market Regime
 
